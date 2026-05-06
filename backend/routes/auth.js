@@ -70,7 +70,7 @@ router.post("/login", (req, res) => {
 
 
 router.post('/register',(req,res)=>{
-    const {username,password,confirmpassword,email} = req.body ||{};
+    const {username,password,confirmpassword,email,address,gender,status} = req.body ||{};
     if (!username || !password || !confirmpassword){
         return res.status(400).json({
             success: false,
@@ -83,8 +83,8 @@ router.post('/register',(req,res)=>{
             message: "Password donot match"
         });
     }
-    const sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-db.query(sql, [username, password,email], (err) => {
+    const sql = "INSERT INTO users (username, password, email,address,gender,status) VALUES (?, ?, ?, ?, ?, ?)";
+db.query(sql, [username, password,email,"",gender && gender !== "" ? gender : null,"pending"], (err) => {
   if (err) {
 console.error(err);
 return res.status(500).json({ message: err.message });
