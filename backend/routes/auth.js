@@ -2,6 +2,12 @@ const express = require("express")
 const router = express.Router()
 const db = require("../config/db");
 
+// Admin credentials
+const admin = {
+    username: "admin",
+    password: "Admin@1234"
+};
+
 router.post("/login", (req, res) => {
     const { username, password } = req.body;
 
@@ -11,6 +17,21 @@ router.post("/login", (req, res) => {
         });
     }
 
+    // Check if admin credentials
+    if (username === admin.username && password === admin.password) {
+        return res.json({
+            success: true,
+            message: "Admin login successful",
+            isAdmin: true,
+            user: {
+                id: 0,
+                username: "admin",
+                role: "admin"
+            }
+        });
+    }
+
+    // Regular user authentication
     const sql = "SELECT * FROM users WHERE username = ?";
 
     db.query(sql, [username], (err, results) => {
@@ -37,6 +58,7 @@ router.post("/login", (req, res) => {
         res.json({
             success: true,
             message: "Login successful",
+            isAdmin: false,
             user: {
                 id: user.id,
                 username: user.username,

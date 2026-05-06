@@ -1,25 +1,6 @@
-// Admin Login
-$("#adminLoginBtn").click(function () {
-    $.ajax({
-        url: "/admin/adminlogin",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({
-            username: $("#adminUsername").val(),
-            password: $("#adminPassword").val()
-        }),
-        success: function (res) {
-            if (res.success) {
-                alert(res.message);
-                $("#adminLoginSection").hide();
-                $("#adminDashboard").show();
-                loadPendingUsers();
-            }
-        },
-        error: function (err) {
-            alert(err.responseJSON?.message || "Login failed");
-        }
-    });
+// Load pending users when page loads
+$(document).ready(function() {
+    loadPendingUsers();
 });
 
 // Load Pending Users
@@ -87,8 +68,6 @@ function updateUserStatus(userId, action) {
 
 // Logout
 function logout() {
-    $("#adminDashboard").hide();
-    $("#adminLoginSection").show();
-    $("#adminUsername").val("");
-    $("#adminPassword").val("");
+    localStorage.clear();
+    window.location.href = "login.html";
 }

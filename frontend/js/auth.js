@@ -10,7 +10,13 @@ $("#loginBtn").click(function () {
         success: function (res) {
             alert(res.message);
             localStorage.setItem("userId", res.user.id);
-            window.location.href = "feed.html";
+            
+            // Redirect based on user role
+            if (res.isAdmin) {
+                window.location.href = "admin.html";
+            } else {
+                window.location.href = "feed.html";
+            }
         },
         error: function (err) {
             alert(err.responseJSON.message);

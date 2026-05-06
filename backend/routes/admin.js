@@ -4,7 +4,7 @@ const db = require("../config/db");
 const app = express()
 const admin ={
     username: "admin",
-    password:"Admin@123"
+    password:"Admin@1234"
 };
 
 /*let users = [
