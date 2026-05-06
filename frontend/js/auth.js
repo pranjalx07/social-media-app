@@ -31,6 +31,7 @@ $("#registerForm").submit(function (e) {
         username: $("#username").val(),
         email: $("#email").val(),
         password: $("#password").val(),
+        confirmpassword: $("#confirm_password").val(), //added confirm password
         address: $("#address").val(),
         gender: $("#gender").val()
     };
