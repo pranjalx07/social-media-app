@@ -13,7 +13,7 @@ let posts=[
     }
 ];
 */
-router.post("/createpost", (req, res) => {
+router.post("/create", (req, res) => {
     const { userId, content } = req.body;
 
     if (!userId || !content) {
@@ -37,17 +37,34 @@ router.post("/createpost", (req, res) => {
 });
 
 
-router.get('/',(req,res)=>{
+router.get('/', (req, res) => {
 
-    return res.json({
-        success: true,
-        posts: []
-    })
-})
+    const sql = `
+    SELECT posts.*, users.username
+    FROM posts
+    JOIN users ON posts.user_id = users.id
+    ORDER BY posts.id DESC
+    `;
+
+    db.query(sql, (err, results) => {
+
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Server error"
+            });
+        }
+
+        res.json({
+            success: true,
+            posts: results
+        });
+    });
+});
 
 // Like or Dislike a post
 // LIKE post
-router.post("/posts/like", (req, res) => {
+router.post("/like", (req, res) => {
     const { postId } = req.body||{};
 
     if (!postId) {
@@ -68,7 +85,7 @@ router.post("/posts/like", (req, res) => {
     });
 });
 // DISLIKE post
-router.post("/posts/dislike", (req, res) => {
+router.post("/dislike", (req, res) => {
     const { postId } = req.body;
 
     if (!postId) {
