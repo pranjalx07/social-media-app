@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS posts (
 -- Insert sample pending users for admin to approve
 INSERT INTO users (username, email, password, address, gender, status) VALUES
 ('testuser', 'test@example.com', 'password123', 'Kathmandu', 'Male', 'pending'),
+('admin', 'admin@example.com', 'Admin@123', 'Teku', 'Male', 'approved'),
 ('demo', 'demo@example.com', 'demo123', 'Pokhara', 'Female', 'pending')
 ON DUPLICATE KEY UPDATE username=username;
 
