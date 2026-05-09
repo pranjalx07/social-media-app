@@ -13,6 +13,31 @@ let posts=[
     }
 ];
 */
+
+function getPostUserColumn(callback) {
+    db.query("SHOW COLUMNS FROM posts LIKE 'userId'", (err, results) => {
+        if (err) {
+            return callback(err);
+        }
+
+        if (results && results.length > 0) {
+            return callback(null, "userId");
+        }
+
+        db.query("SHOW COLUMNS FROM posts LIKE 'user_id'", (fallbackErr, fallbackResults) => {
+            if (fallbackErr) {
+                return callback(fallbackErr);
+            }
+
+            if (fallbackResults && fallbackResults.length > 0) {
+                return callback(null, "user_id");
+            }
+
+            return callback(new Error("No user column found on posts table"));
+        });
+    });
+}
+
 router.post("/create", (req, res) => {
     const { userId, content } = req.body;
 
@@ -22,42 +47,56 @@ router.post("/create", (req, res) => {
         });
     }
 
-    const sql = "INSERT INTO posts (user_id, content) VALUES (?, ?)";
-
-    db.query(sql, [userId, content], (err, result) => {
-        if (err) {
+    getPostUserColumn((columnErr, userColumn) => {
+        if (columnErr) {
             return res.status(500).json({ message: "Server error" });
         }
 
-        res.json({
-            success: true,
-            message: "Post created successfully"
+        const sql = `INSERT INTO posts (${userColumn}, content) VALUES (?, ?)`;
+
+        db.query(sql, [userId, content], (err) => {
+            if (err) {
+                return res.status(500).json({ message: "Server error" });
+            }
+
+            res.json({
+                success: true,
+                message: "Post created successfully"
+            });
         });
     });
 });
 
 
 router.get('/', (req, res) => {
-
-    const sql = `
-    SELECT posts.*, users.username
-    FROM posts
-    JOIN users ON posts.user_id = users.id
-    ORDER BY posts.id DESC
-    `;
-
-    db.query(sql, (err, results) => {
-
-        if (err) {
-            console.log(err);
+    getPostUserColumn((columnErr, userColumn) => {
+        if (columnErr) {
+            console.log(columnErr);
             return res.status(500).json({
                 message: "Server error"
             });
         }
 
-        res.json({
-            success: true,
-            posts: results
+        const sql = `
+        SELECT posts.*, users.username
+        FROM posts
+        JOIN users ON posts.${userColumn} = users.id
+        ORDER BY posts.id DESC
+        `;
+
+        db.query(sql, (err, results) => {
+
+            if (err) {
+                console.log(err);
+                return res.status(500).json({
+                    message: "Server error"
+                });
+            }
+
+            res.json({
+                success: true,
+                posts: results
+            });
         });
     });
 });
