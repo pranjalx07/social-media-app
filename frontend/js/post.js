@@ -1,8 +1,8 @@
 function loadPosts() {
-    $.get("/posts", function (res) {
-        $("#feed").html("");
-        res.posts.forEach(p => {
-            $("#feed").append(`
+  $.get("/posts", function (res) {
+    $("#feed").html("");
+    res.posts.forEach((p) => {
+      $("#feed").append(`
                 <div class="card mt-2 p-2">
                   <b>${p.username}</b>
                   <p>${p.content}</p>
@@ -11,28 +11,32 @@ function loadPosts() {
                   <button onclick="dislike(${p.id})">Dislike</button>
                 </div>
             `);
-        });
     });
+  });
 }
 
 $("#postBtn").click(function () {
-    $.ajax({
-        url: "/posts/create",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({
-            userId: localStorage.getItem("userId"),
-            content: $("#postContent").val()
-        }),
-        success: loadPosts
-    });
+  $.ajax({
+    url: "/posts/create",
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({
+      userId: localStorage.getItem("userId"),
+      content: $("#postContent").val(),
+    }),
+    success: function (res) {
+    //   localStorage.setItem("userId", res.user.id);
+
+      window.location.href = "feed.html";
+    },
+  });
 });
 
 function like(id) {
-    $.post("/posts/like", { postId: id }, loadPosts);
+  $.post("/posts/like", { postId: id }, loadPosts);
 }
 function dislike(id) {
-    $.post("/posts/dislike", { postId: id }, loadPosts);
+  $.post("/posts/dislike", { postId: id }, loadPosts);
 }
 
 loadPosts();

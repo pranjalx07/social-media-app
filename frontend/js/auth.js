@@ -7,19 +7,39 @@ $("#loginBtn").click(function () {
             username: $("#username").val(),
             password: $("#password").val()
         }),
-        success: function (res) {
-            alert(res.message);
-            localStorage.setItem("userId", res.user.id);
-            
-            // Redirect based on user role
-            if (res.isAdmin) {
-                window.location.href = "admin.html";
-            } else {
-                window.location.href = "feed.html";
-            }
-        },
+    success: function(res){
+
+    // SAVE USER ID
+    localStorage.setItem("userId", res.user.id);
+
+    // OPTIONAL
+    localStorage.setItem("username", res.user.username);
+
+    $("#message")
+      .html(res.message)
+      .removeClass("text-danger")
+      .addClass("text-success");
+
+    setTimeout(() => {
+
+        // ADMIN REDIRECT
+        if(res.isAdmin){
+            window.location.href = "admin.html";
+        }
+
+        // USER REDIRECT
+        else{
+            window.location.href = "feed.html";
+        }
+
+    },1000);
+},
         error: function (err) {
-            alert(err.responseJSON.message);
+        $("#message")
+        .html(err.responseJSON.message)
+        .removeClass("text-success")
+        .addClass("text-danger");
+
         }
     });
 });
@@ -28,12 +48,12 @@ $("#registerForm").submit(function (e) {
     e.preventDefault();
 
     const userData = {
-        username: $("#username").val(),
-        email: $("#email").val(),
-        password: $("#password").val(),
-        confirmpassword: $("#confirm_password").val(), //added confirm password
-        address: $("#address").val(),
-        gender: $("#gender").val()
+    username: $("#username").val(),
+    email: $("#email").val(),
+    password: $("#password").val(),
+    confirmpassword: $("#confirm_password").val(), //added confirm password
+    address: $("#address").val(),
+    gender: $("#gender").val()
     };
 
     $.ajax({
