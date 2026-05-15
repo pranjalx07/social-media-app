@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const db = require("../config/db");
 const multer = require("multer");
+const path = require("path");
 // Multer setup for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
