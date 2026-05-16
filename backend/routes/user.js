@@ -6,7 +6,7 @@ const path = require("path");
 // Multer setup for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "uploads/");
+        cb(null, "public/uploads/");
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + "-" + file.originalname);
@@ -42,8 +42,7 @@ router.post("/update-profile", upload.single("profilePic"), (req, res) => {
     const { userId, address,bio, oldPassword,newPassword } = req.body;
     let profilePic = null;
     if (req.file) {
-        profilePic = req.file.filename;
-    }
+    profilePic = "/uploads/" + req.file.filename;    }
     const sql1 = `
         UPDATE users
         SET address = ?,bio=?, profile_pic = COALESCE(?, profile_pic)
