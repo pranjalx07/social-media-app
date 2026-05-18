@@ -10,6 +10,25 @@ function loadPosts() {
                   <button onclick="like(${p.id})">Like</button>
                   <button onclick="dislike(${p.id})">Dislike</button>
                 </div>
+                <div class="mt-3">
+
+    <div class="d-flex gap-2">
+
+        <input
+            type="text"
+            id="comment-${p.id}"
+            class="form-control"
+            placeholder="Write a comment...">
+
+        <button
+            onclick="addComment(${p.id})"
+            class="btn btn-primary">
+            Comment
+        </button>
+
+    </div>
+
+</div>
             `);
     });
   });
