@@ -145,5 +145,44 @@ router.post("/dislike", (req, res) => {
     });
 });
 
+//add comment
+router.post("/comment", (req, res) => {
 
+    const { postId, userId, comment } = req.body;
+
+    if (!postId || !userId || !comment) {
+
+        return res.status(400).json({
+            message: "All fields required"
+        });
+    }
+
+    const sql = `
+        INSERT INTO comments
+        (post_id, user_id, comment)
+        VALUES (?, ?, ?)
+    `;
+
+    db.query(
+        sql,
+        [postId, userId, comment],
+
+        (err) => {
+
+            if (err) {
+
+                console.log(err);
+
+                return res.status(500).json({
+                    message: "Server error"
+                });
+            }
+
+            res.json({
+                success: true,
+                message: "Comment added"
+            });
+        }
+    );
+});
 module.exports = router;
