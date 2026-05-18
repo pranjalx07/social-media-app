@@ -59,3 +59,28 @@ function dislike(id) {
 }
 
 loadPosts();
+function addComment(postId){
+
+    $.ajax({
+
+        url: "/posts/comment",
+
+        type: "POST",
+
+        contentType: "application/json",
+
+        data: JSON.stringify({
+
+            postId: postId,
+
+            userId: localStorage.getItem("userId"),
+
+            comment: $(`#comment-${postId}`).val()
+        }),
+
+        success: function(){
+
+            loadPosts();
+        }
+    });
+}
