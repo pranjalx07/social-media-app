@@ -185,4 +185,39 @@ router.post("/comment", (req, res) => {
         }
     );
 });
+
+router.get("/comments/:postId", (req, res) => {
+
+    const postId = req.params.postId;
+
+    const sql = `
+        SELECT comments.*, users.username
+
+        FROM comments
+
+        JOIN users
+        ON comments.user_id = users.id
+
+        WHERE comments.post_id = ?
+
+        ORDER BY comments.id DESC
+    `;
+
+    db.query(sql, [postId], (err, results) => {
+
+        if (err) {
+
+            console.log(err);
+
+            return res.status(500).json({
+                message: "Server error"
+            });
+        }
+
+        res.json({
+            success: true,
+            comments: results
+        });
+    });
+});
 module.exports = router;
