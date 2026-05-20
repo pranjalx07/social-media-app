@@ -27,6 +27,7 @@ function loadPosts() {
         </button>
 
     </div>
+    <div id="comments-${p.id}" class="mt-3"></div>
 
 </div>
             `);
@@ -77,10 +78,40 @@ function addComment(postId){
 
             comment: $(`#comment-${postId}`).val()
         }),
+    success : function(){
+      $(`#comment-${postId}`).val("");
 
-        success: function(){
-
-            loadPosts();
-        }
+loadComments(postId);
+    }
+      
     });
+}
+function loadComments(postId){
+
+    $.get(`/posts/comments/${postId}`,
+
+        function(res){
+
+            let html = "";
+
+            res.comments.forEach(c => {
+
+                html += `
+
+                    <div class="bg-light rounded p-2 mb-2">
+
+                        <b>${c.username}</b>
+
+                        <div>
+                            ${c.comment}
+                        </div>
+
+                    </div>
+                `;
+            });
+
+            $(`#comments-${postId}`).html(html);
+        }
+    );
+
 }
